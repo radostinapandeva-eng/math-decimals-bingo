@@ -3,40 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Бинго – Десетични дроби (5. клас)</title>
+  <title>БИНГО – Десетични дроби (5. клас)</title>
   <style>
-    :root{
-      --bg:#f6f8fb; --card:#ffffff; --accent:#2667ff; --accent2:#00a38a;
-      --text:#1f2937; --muted:#6b7280; --grid:#e5e7eb; --hit:#d1fae5;
-    }
+    :root{--bg:#f6f8fb;--card:#fff;--accent:#2667ff;--accent2:#00a38a;--text:#1f2937;--muted:#6b7280;--grid:#e5e7eb;--hit:#d1fae5}
     *{box-sizing:border-box}
     body{margin:0;padding:24px;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
-    header{max-width:920px;margin:0 auto 16px auto}
-    h1{margin:0 0 6px 0;font-size:clamp(22px,2.5vw,30px)}
-    .lead{margin:6px 0 0 0;color:var(--muted)}
-    .app{max-width:920px;margin:0 auto;display:grid;grid-template-columns:1fr 340px;gap:16px}
-    @media (max-width:880px){.app{grid-template-columns:1fr}}
+    header{max-width:920px;margin:0 auto 16px} h1{margin:0 0 6px;font-size:clamp(22px,2.5vw,30px)} .lead{margin:6px 0 0;color:var(--muted)}
+    .app{max-width:920px;margin:0 auto;display:grid;grid-template-columns:1fr 340px;gap:16px} @media(max-width:880px){.app{grid-template-columns:1fr}}
     .panel{background:var(--card);border:1px solid var(--grid);border-radius:12px;padding:16px;box-shadow:0 2px 6px rgba(0,0,0,.04)}
     .controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
     button{border:0;background:var(--accent);color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
-    button.secondary{background:#e5e7eb;color:#111827}
-    button.success{background:var(--accent2)}
+    button.secondary{background:#e5e7eb;color:#111827} button.success{background:var(--accent2)}
     .task{margin-top:8px;padding:12px;border:1px dashed var(--grid);border-radius:10px;background:#fafafa}
     .task .label{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.04em}
     .task .value{font-size:22px;font-weight:700;margin-top:4px}
     .board{width:100%;aspect-ratio:1/1;display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-    .cell{
-      border:1px solid var(--grid);border-radius:10px;background:#fff;
-      display:flex;align-items:center;justify-content:center;font-size:20px;user-select:none;cursor:pointer;
-      transition:transform .05s ease, background .2s ease, box-shadow .2s ease; padding:6px
-    }
+    .cell{border:1px solid var(--grid);border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;user-select:none;cursor:pointer;transition:transform .05s,background .2s,box-shadow .2s;padding:6px}
     .cell:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.08)}
     .cell.marked{background:var(--hit);border-color:#34d399}
     .list{max-height:260px;overflow:auto;border:1px solid var(--grid);border-radius:10px;padding:8px;background:#fff}
-    .list-item{padding:8px 10px;border-bottom:1px solid #f1f5f9}
-    .list-item:last-child{border-bottom:0}
-    .win{margin-top:10px;padding:10px;background:#ecfeff;border:1px solid #a5f3fc;border-radius:10px;display:none}
-    .win.show{display:block}
+    .list-item{padding:8px 10px;border-bottom:1px solid #f1f5f9} .list-item:last-child{border-bottom:0}
+    .win{margin-top:10px;padding:10px;background:#ecfeff;border:1px solid #a5f3fc;border-radius:10px;display:none} .win.show{display:block}
     .small{font-size:12px;color:var(--muted)}
   </style>
 </head>
@@ -58,7 +45,7 @@
       <div class="task">
         <div class="label">Текуща задача</div>
         <div id="taskText" class="value">—</div>
-        <div id="answerText" class="small" style="display:none;">Отговор: <b id="answerValue">—</b></div>
+        <div id="answerText" class="small" style="display:none">Отговор: <b id="answerValue">—</b></div>
       </div>
 
       <div id="board" class="board" aria-label="Бинго картон 5x5"></div>
@@ -67,37 +54,162 @@
 
     <aside class="panel">
       <h3 style="margin-top:0">История на задачите</h3>
-      <div id="history" class="list" aria-label="История на извиканите задачи"></div>
+      <div id="history" class="list"></div>
     </aside>
   </div>
 
   <script>
-    // Задачи за 5. клас
-    const tasks = [
-      // Събиране
-      {problem:'0.3 + 0.5', answer:0.8},
-      {problem:'1.2 + 0.8', answer:2.0},
-      {problem:'2.5 + 1.5', answer:4.0},
-      {problem:'3.4 + 2.1', answer:5.5},
-      {problem:'4.7 + 0.6', answer:5.3},
-      // Изваждане
-      {problem:'2.0 - 0.7', answer:1.3},
-      {problem:'5.5 - 2.2', answer:3.3},
-      {problem:'4.0 - 1.5', answer:2.5},
-      {problem:'3.6 - 0.9', answer:2.7},
-      {problem:'6.3 - 2.8', answer:3.5},
-      // Умножение
-      {problem:'1.5 × 2', answer:3.0},
-      {problem:'0.6 × 5', answer:3.0},
-      {problem:'0.8 × 4', answer:3.2},
-      {problem:'2.5 × 2', answer:5.0},
-      {problem:'1.2 × 3', answer:3.6},
-      // Деление
-      {problem:'3.6 ÷ 2', answer:1.8},
-      {problem:'4.5 ÷ 5', answer:0.9},
-      {problem:'2.4 ÷ 3', answer:0.8},
-      {problem:'3.0 ÷ 2', answer:1.5},
-      {problem:'5.0 ÷ 2', answer:2.5},
-      // Сравнение
-      {problem:'Кое е по-голямо: 0.7 или 0.65?', answer:0.7},
-      {problem:'Кое е по-голямо: 1.2 или 1.02?', answer:1.2},
+  (function(){
+    // Стартираме JS СЛЕД като DOM е готов, за да няма тайминг проблеми
+    document.addEventListener('DOMContentLoaded', function(){
+      console.log('JS loaded ✅');
+
+      // DOM елементи
+      var boardEl   = document.getElementById('board');
+      var taskText  = document.getElementById('taskText');
+      var answerBox = document.getElementById('answerText');
+      var answerVal = document.getElementById('answerValue');
+      var historyEl = document.getElementById('history');
+      var winEl     = document.getElementById('win');
+
+      var btnNew  = document.getElementById('btn-new');
+      var btnNext = document.getElementById('btn-next');
+      var btnShow = document.getElementById('btn-show');
+      var btnReset= document.getElementById('btn-reset');
+
+      // За всеки случай, ако нещо липсва
+      if(!boardEl || !btnNew || !btnNext || !btnShow || !btnReset){
+        alert('Грешка: някои елементи не са намерени. Рефрешни страницата (Ctrl+F5).');
+        return;
+      }
+
+      // Данни (ASCII само: x, /, -)
+      var tasks = [
+        {p:'0.3 + 0.5', a:'0.8'},
+        {p:'1.2 + 0.8', a:'2.0'},
+        {p:'2.5 + 1.5', a:'4.0'},
+        {p:'3.4 + 2.1', a:'5.5'},
+        {p:'4.7 + 0.6', a:'5.3'},
+        {p:'2.0 - 0.7', a:'1.3'},
+        {p:'5.5 - 2.2', a:'3.3'},
+        {p:'4.0 - 1.5', a:'2.5'},
+        {p:'3.6 - 0.9', a:'2.7'},
+        {p:'6.3 - 2.8', a:'3.5'},
+        {p:'1.5 x 2',   a:'3.0'},
+        {p:'0.6 x 5',   a:'3.0'},
+        {p:'0.8 x 4',   a:'3.2'},
+        {p:'2.5 x 2',   a:'5.0'},
+        {p:'1.2 x 3',   a:'3.6'},
+        {p:'3.6 / 2',   a:'1.8'},
+        {p:'4.5 / 5',   a:'0.9'},
+        {p:'2.4 / 3',   a:'0.8'},
+        {p:'3.0 / 2',   a:'1.5'},
+        {p:'5.0 / 2',   a:'2.5'},
+        {p:'Кое е по-голямо: 0.7 или 0.65?', a:'0.7'},
+        {p:'Кое е по-голямо: 1.2 или 1.02?', a:'1.2'},
+        {p:'Кое е по-голямо: 2.05 или 2.5?', a:'2.5'},
+        {p:'Кое е по-голямо: 3.3 или 3.30?', a:'3.3'},
+        {p:'Кое е по-голямо: 0.45 или 0.54?',a:'0.54'}
+      ];
+
+      var marked = Array(5).fill(0).map(function(){return Array(5).fill(false);});
+      var used   = new Set();
+
+      function shuffle(a){
+        return a.map(function(x){return [Math.random(),x];})
+                .sort(function(a,b){return a[0]-b[0];})
+                .map(function(x){return x[1];});
+      }
+
+      function generateBoard(){
+        var pool=[], i;
+        for(i=1;i<=99;i++){ pool.push((i/10).toFixed(1)); }
+        var sel = shuffle(pool).slice(0,25);
+
+        marked = Array(5).fill(0).map(function(){return Array(5).fill(false);});
+        boardEl.innerHTML = '';
+        winEl.classList.remove('show');
+
+        for(var r=0;r<5;r++){
+          for(var c=0;c<5;c++){
+            var v = sel[r*5+c];
+            var cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.textContent = v;
+            (function(rr,cc,cellRef){
+              cellRef.addEventListener('click', function(){
+                marked[rr][cc] = !marked[rr][cc];
+                cellRef.classList.toggle('marked', marked[rr][cc]);
+                checkWin();
+              });
+            })(r,c,cell);
+            boardEl.appendChild(cell);
+          }
+        }
+      }
+
+      function nextTask(){
+        if(used.size === tasks.length){
+          alert('Няма повече задачи. Натисни „Нова карта“.');
+          return;
+        }
+        var idx;
+        do { idx = Math.floor(Math.random()*tasks.length); } while(used.has(idx));
+        used.add(idx);
+
+        var t = tasks[idx];
+        taskText.textContent = t.p;
+        answerVal.textContent = t.a;
+        answerBox.style.display = 'none';
+
+        var row = document.createElement('div');
+        row.className = 'list-item';
+        row.textContent = t.p + ' → ' + t.a;
+        historyEl.prepend(row);
+      }
+
+      function checkWin(){
+        // редове
+        for(var r=0;r<5;r++){
+          if(marked[r].every(Boolean)){ winEl.classList.add('show'); return; }
+        }
+        // колони
+        for(var c=0;c<5;c++){
+          var ok = true;
+          for(var r=0;r<5;r++){
+            if(!marked[r][c]){ ok=false; break; }
+          }
+          if(ok){ winEl.classList.add('show'); return; }
+        }
+        // диагонали
+        var d1=true, d2=true;
+        for(var k=0;k<5;k++){
+          if(!marked[k][k]) d1=false;
+          if(!marked[k][4-k]) d2=false;
+        }
+        if(d1 || d2){ winEl.classList.add('show'); }
+      }
+
+      // Бутони
+      btnNew.addEventListener('click', function(){
+        generateBoard(); used.clear(); taskText.textContent='—';
+        answerBox.style.display='none'; historyEl.innerHTML=''; winEl.classList.remove('show');
+      });
+      btnNext.addEventListener('click', nextTask);
+      btnShow.addEventListener('click', function(){
+        answerBox.style.display = (answerBox.style.display==='none' ? 'block' : 'none');
+      });
+      btnReset.addEventListener('click', function(){
+        Array.from(boardEl.children).forEach(function(c){ c.classList.remove('marked'); });
+        marked = Array(5).fill(0).map(function(){return Array(5).fill(false);});
+        winEl.classList.remove('show');
+      });
+
+      // Старт
+      generateBoard();
+      nextTask();
+    });
+  })();
+  </script>
+</body>
+</html>
