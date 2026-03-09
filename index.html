@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Бинго: Десетични дроби (5. клас)</title>
+  <title>Бинго – Десетични дроби (5. клас)</title>
   <style>
     :root{
-      --bg:#f6f8fb; --card:#ffffff; --accent:#2667ff; --accent-2:#00a38a;
+      --bg:#f6f8fb; --card:#ffffff; --accent:#2667ff; --accent2:#00a38a;
       --text:#1f2937; --muted:#6b7280; --grid:#e5e7eb; --hit:#d1fae5;
     }
     *{box-sizing:border-box}
@@ -20,21 +20,21 @@
     .controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
     button{border:0;background:var(--accent);color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
     button.secondary{background:#e5e7eb;color:#111827}
-    button.success{background:var(--accent-2)}
-    button:disabled{opacity:.6;cursor:not-allowed}
-    .task{margin-top:8px;padding:12px;border:1px dashed var(--grid);border-radius:10px;background:#fafafa;font-size:18px}
+    button.success{background:var(--accent2)}
+    .task{margin-top:8px;padding:12px;border:1px dashed var(--grid);border-radius:10px;background:#fafafa}
     .task .label{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.04em}
     .task .value{font-size:22px;font-weight:700;margin-top:4px}
     .board{width:100%;aspect-ratio:1/1;display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-    .cell{border:1px solid var(--grid);border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;user-select:none;cursor:pointer;transition:transform .05s ease,background .2s ease,box-shadow .2s ease;padding:6px}
+    .cell{
+      border:1px solid var(--grid);border-radius:10px;background:#fff;
+      display:flex;align-items:center;justify-content:center;font-size:20px;user-select:none;cursor:pointer;
+      transition:transform .05s ease, background .2s ease, box-shadow .2s ease; padding:6px
+    }
     .cell:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.08)}
     .cell.marked{background:var(--hit);border-color:#34d399}
-    .sidebar .section{margin-bottom:16px}
     .list{max-height:260px;overflow:auto;border:1px solid var(--grid);border-radius:10px;padding:8px;background:#fff}
-    .list-item{padding:8px 10px;border-bottom:1px solid #f1f5f9;display:flex;gap:8px;align-items:center}
+    .list-item{padding:8px 10px;border-bottom:1px solid #f1f5f9}
     .list-item:last-child{border-bottom:0}
-    .badge{font-size:12px;padding:2px 8px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:700}
-    .muted{color:var(--muted)}
     .win{margin-top:10px;padding:10px;background:#ecfeff;border:1px solid #a5f3fc;border-radius:10px;display:none}
     .win.show{display:block}
     .small{font-size:12px;color:var(--muted)}
@@ -42,55 +42,37 @@
 </head>
 <body>
   <header>
-    <h1>БИНГО: Десетични дроби (5. клас)</h1>
-    <p class="lead">Маркирай в картона резултата от текущата задача. 5 поред хоризонтално, вертикално или диагонално = БИНГО!</p>
+    <h1>БИНГО – Десетични дроби (5. клас)</h1>
+    <p class="lead">Маркирай на картата резултата от текущата задача. 5 поред (ред, колона или диагонал) = БИНГО!</p>
   </header>
 
   <div class="app">
-    <!-- Лява колона: Картона -->
     <section class="panel">
       <div class="controls">
         <button id="btn-new" class="secondary">Нова карта</button>
         <button id="btn-next" class="success">Нова задача</button>
-        <button id="btn-show" title="Покажи/скрий отговора">Покажи отговора</button>
+        <button id="btn-show" class="secondary">Покажи отговора</button>
         <button id="btn-reset" class="secondary">Изчисти маркировките</button>
       </div>
+
       <div class="task">
         <div class="label">Текуща задача</div>
         <div id="taskText" class="value">—</div>
         <div id="answerText" class="small" style="display:none;">Отговор: <b id="answerValue">—</b></div>
       </div>
+
       <div id="board" class="board" aria-label="Бинго картон 5x5"></div>
       <div id="win" class="win">🎉 Имаш БИНГО! Чудесна работа!</div>
     </section>
 
-    <!-- Дясна колона: История/настройки -->
-    <aside class="sidebar">
-      <div class="panel section">
-        <h3 style="margin:0 0 8px 0;">История на задачите</h3>
-        <div id="history" class="list" aria-label="История на извиканите задачи"></div>
-      </div>
-      <div class="panel section">
-        <h3 style="margin:0 0 8px 0;">Нива на трудност</h3>
-        <div class="small muted" style="margin-bottom:8px">Използва се разнообразен микс подходящ за 5. клас.</div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap">
-          <span class="badge">Събиране</span>
-          <span class="badge">Изваждане</span>
-          <span class="badge">Умножение</span>
-          <span class="badge">Деление</span>
-          <span class="badge">Сравнение</span>
-          <span class="badge">Смесено</span>
-        </div>
-      </div>
-      <div class="panel section">
-        <h3 style="margin:0 0 8px 0;">Съвет</h3>
-        <div class="small">Ако числото го няма на картата – не маркирай. Следващата задача може да е твоето число! 🙂</div>
-      </div>
+    <aside class="panel">
+      <h3 style="margin-top:0">История на задачите</h3>
+      <div id="history" class="list" aria-label="История на извиканите задачи"></div>
     </aside>
   </div>
 
   <script>
-    // ————— Данни: задачи за десетични дроби —————
+    // Задачи за 5. клас
     const tasks = [
       // Събиране
       {problem:'0.3 + 0.5', answer:0.8},
@@ -119,141 +101,3 @@
       // Сравнение
       {problem:'Кое е по-голямо: 0.7 или 0.65?', answer:0.7},
       {problem:'Кое е по-голямо: 1.2 или 1.02?', answer:1.2},
-      {problem:'Кое е по-голямо: 2.05 или 2.5?', answer:2.5},
-      {problem:'Кое е по-голямо: 3.3 или 3.30?', answer:3.3},
-      {problem:'Кое е по-голямо: 0.45 или 0.54?', answer:0.54},
-    ];
-
-    const format = (x)=> Number(x.toFixed(1));
-    const rand = (n)=> Math.floor(Math.random()*n);
-    const shuffle = (arr)=> arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
-
-    // ————— Състояние —————
-    let boardValues = [];
-    let marked = Array(5).fill(0).map(()=>Array(5).fill(false));
-    let usedTasksIdx = new Set();
-
-    // ————— DOM —————
-    const boardEl = document.getElementById('board');
-    const taskText = document.getElementById('taskText');
-    const answerText = document.getElementById('answerText');
-    const answerValue = document.getElementById('answerValue');
-    const winEl = document.getElementById('win');
-    const historyEl = document.getElementById('history');
-
-    const btnNew = document.getElementById('btn-new');
-    const btnNext = document.getElementById('btn-next');
-    const btnShow = document.getElementById('btn-show');
-    const btnReset = document.getElementById('btn-reset');
-
-    // ————— Генериране на бинго карта —————
-    function generateBoard() {
-      const pool = [];
-      for (let i=1; i<=99; i++) pool.push(format(i/10));
-      const selection = shuffle(pool).slice(0,25);
-
-      marked = Array(5).fill(0).map(()=>Array(5).fill(false));
-      boardEl.innerHTML = '';
-      winEl.classList.remove('show');
-
-      for (let i=0;i<5;i++){
-        for (let j=0;j<5;j++){
-          const idx = i*5+j;
-          const val = selection[idx];
-
-          const cell = document.createElement('div');
-          cell.className = 'cell';
-          cell.textContent = val.toFixed(1);
-          cell.addEventListener('click', ()=>{
-            marked[i][j] = !marked[i][j];
-            cell.classList.toggle('marked', marked[i][j]);
-            checkWin();
-          });
-
-          boardEl.appendChild(cell);
-        }
-      }
-    }
-
-    // ————— Задачи —————
-    function nextTask(){
-      if (usedTasksIdx.size === tasks.length){
-        alert('Няма повече задачи. Започни нова сесия (Нова карта).');
-        return;
-      }
-      let idx;
-      do { idx = rand(tasks.length); } while (usedTasksIdx.has(idx));
-      usedTasksIdx.add(idx);
-
-      const t = tasks[idx];
-      taskText.textContent = t.problem;
-      answerValue.textContent = (typeof t.answer === 'number' ? t.answer.toFixed(1) : t.answer);
-      answerText.style.display = 'none';
-
-      addToHistory(t.problem, t.answer);
-    }
-
-    function addToHistory(problem, answer){
-      const row = document.createElement('div');
-      row.className = 'list-item';
-      const a = (typeof answer === 'number') ? answer.toFixed(1) : answer;
-      row.innerHTML = `<span class="badge">Q</span> ${problem} <span class="muted">→</span> <b>${a}</b>`;
-      historyEl.prepend(row);
-    }
-
-    // ————— Проверка за БИНГО —————
-    function checkWin(){
-      // редове
-      for (let r=0;r<5;r++){
-        if (marked[r].every(Boolean)) return showWin();
-      }
-      // колони
-      for (let c=0;c<5;c++){
-        let ok = true;
-        for (let r=0;r<5;r++){
-          if (!marked[r][c]){ ok=false; break; }
-        }
-        if (ok) return showWin();
-      }
-      // диагонали
-      let d1=true, d2=true;
-      for (let k=0;k<5;k++){
-        if (!marked[k][k]) d1=false;
-        if (!marked[k][4-k]) d2=false;
-      }
-      if (d1 || d2) return showWin();
-    }
-
-    function showWin(){ winEl.classList.add('show'); }
-
-    // ————— Бутони —————
-    btnNew.addEventListener('click', ()=>{
-      generateBoard();
-      usedTasksIdx.clear();
-      taskText.textContent = '—';
-      answerText.style.display = 'none';
-      historyEl.innerHTML = '';
-    });
-
-    btnNext.addEventListener('click', nextTask);
-    btnShow.addEventListener('click', ()=>{
-      answerText.style.display = (answerText.style.display === 'none' ? 'block' : 'none');
-    });
-    btnReset.addEventListener('click', ()=>{
-      const cells = Array.from(boardEl.children);
-      for (let i=0;i<5;i++){
-        for(let j=0;j<5;j++){
-          marked[i][j]=false;
-          const cell = cells[i*5+j];
-          cell.classList.remove('marked');
-        }
-      }
-      winEl.classList.remove('show');
-    });
-
-    // ————— Старт —————
-    generateBoard();
-    nextTask();
-  </script>
-</body>
-</html>
